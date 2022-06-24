@@ -26,16 +26,16 @@ $permissionsListToShow = $role->permissions
                     </div>
                     <hr />
                     <div class="mt-4 mb-4">
-                        Result after <b>map()</b>:
+                        Value after <b>map()</b>:
                         <br />
                         @php dump($role->permissions
     ->map(function ($permission) {
         return $permission->name;
-    })) @endphp
+    })  ) @endphp
                     </div>
                     <hr />
                     <div class="mt-4 mb-4">
-                    Value of <b>$permissionsListToShow</b>:
+                    Value after <b>map()->implode()</b>:
                     <br />
                     @php dump($permissionsListToShow) @endphp
                     </div>

@@ -18,6 +18,7 @@ Route::redirect('/', 'example1');
 Route::controller(\App\Http\Controllers\ExampleController::class)->group(function () {
     Route::get('example1', 'example1')->name('example1');
     Route::get('example2', 'example2')->name('example2');
+    Route::get('example3', 'example3')->name('example3');
 });
 
 require __DIR__.'/auth.php';

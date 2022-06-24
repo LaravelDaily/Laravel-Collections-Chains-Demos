@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ExampleController extends Controller
@@ -22,5 +23,12 @@ class ExampleController extends Controller
     public function example2()
     {
         return view('example2');
+    }
+
+    public function example3()
+    {
+        $user = User::first();
+
+        return view('example3', compact('user'));
     }
 }
