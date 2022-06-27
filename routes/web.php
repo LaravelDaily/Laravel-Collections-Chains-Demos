@@ -19,6 +19,7 @@ Route::controller(\App\Http\Controllers\ExampleController::class)->group(functio
     Route::get('example1', 'example1')->name('example1');
     Route::get('example2', 'example2')->name('example2');
     Route::get('example3', 'example3')->name('example3');
+    Route::get('example4', 'example4')->name('example4');
 });
 
 require __DIR__.'/auth.php';

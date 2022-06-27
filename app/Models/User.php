@@ -24,6 +24,9 @@ class User extends Authenticatable
         'link_twitter',
         'link_facebook',
         'link_instagram',
+        'github_access_token',
+        'is_registered',
+        'organization_id',
     ];
 
     /**
@@ -48,5 +51,10 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    public function repositories()
+    {
+        return $this->morphMany(Repository::class, 'owner');
     }
 }
