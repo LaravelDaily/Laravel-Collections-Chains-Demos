@@ -52,6 +52,18 @@ class ExampleController extends Controller
             ->map(fn ($link, $network) => '<a href="' . $link . '">' . $network . '</a>')
             ->implode(' | ');
 
+        // ALTERNATIVE - WITH ARRAYS
+        /*
+        $socialLinksArray = [
+            'Twitter' => $user->link_twitter,
+            'Facebook' => $user->link_facebook,
+            'Instagram' => $user->link_instagram,
+        ];
+        $socialLinksArray = array_filter($socialLinksArray, fn($item) => $item != '');
+        array_walk($socialLinksArray, fn($link, $network) => '<a href="' . $link . '">' . $network . '</a>');
+        $socialLinks = implode(' | ', $socialLinksArray);
+        */
+
         return view('example3', compact('user'));
     }
 
@@ -73,6 +85,8 @@ class ExampleController extends Controller
             ->each(static function (Repository $repository): void {
                 UpdateRepositoryDetails::dispatch($repository);
             });
+
+        // No alternatives with arrays this time, this code uses Eloquent relations power
 
         return view('example4');
     }

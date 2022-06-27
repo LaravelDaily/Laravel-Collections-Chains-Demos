@@ -73,7 +73,23 @@ $socialLinks = collect([
     'Instagram' => $user->link_instagram,
 ])->filter()->map(fn ($link, $network) => '<a href="' . $link . '">' . $network . '</a>')->implode(' | ')) @endphp
                     </div>
-                </div>
+
+                        <hr/>
+                        <div class="mt-4 mb-4">
+                            <b>Alternative - with arrays:</b>
+                            <pre class="bg-gray-100 p-2 mb-4">
+$socialLinksArray = [
+    'Twitter' => $user->link_twitter,
+    'Facebook' => $user->link_facebook,
+    'Instagram' => $user->link_instagram,
+];
+$socialLinksArray = array_filter($socialLinksArray, fn($item) => $item != '');
+array_walk($socialLinksArray, fn($link, $network) => '&lt;a href="' . $link . '"&gt;' . $network . '&lt;/a&gt;');
+$socialLinks = implode(' | ', $socialLinksArray);
+                    </pre>
+                        </div>
+
+                    </div>
             </div>
         </div>
     </div>
