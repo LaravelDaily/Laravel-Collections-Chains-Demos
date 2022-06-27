@@ -9,9 +9,11 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
+                    <div class="mb-4">
                     <b>Task</b>: you have a User model with links to social network profiles: Twitter, Facebook, Instagram. Some of them may be empty.
                     <br />
                     Your goal is to show non-empty links, separated by | symbol.
+                    </div>
                     <hr />
 
                     <div class="mt-4 mb-4">

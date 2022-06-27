@@ -15,6 +15,7 @@ class TwitterGiveawayCommand extends Command
             ->map(fn (string $name): string => str_replace('@', '', $name))
             ->implode(', ');
 
+        info(sprintf('Users excluded: %s', $excluded));
         $this->info(sprintf('Users excluded: %s', $excluded));
 
         return 0;
