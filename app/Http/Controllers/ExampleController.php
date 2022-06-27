@@ -19,11 +19,14 @@ class ExampleController extends Controller
             ->map(fn($permission) => $permission->name)
             ->implode("<br>");
 
+        // ALTERNATIVE - WITH ARRAYS
+        /*
         $permissionsArrayToShow = [];
         foreach ($role->permissions as $permission) {
             $permissionsArrayToShow[] = $permission->name;
         }
         $permissionsListToShow = implode("<br>", $permissionsArrayToShow);
+        */
 
         return view('example1');
     }
