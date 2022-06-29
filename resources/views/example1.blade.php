@@ -36,6 +36,11 @@ $permissionsListToShow = $role->permissions
     ->map(fn($permission) => $permission->name)->implode("<br>")  ) @endphp
                     </div>
 
+                    <hr />
+                    <div class="mt-4 mb-4">
+                        Inspiration source: <a class="underline" href="https://github.com/Bottelet/DaybydayCRM/blob/a5719a23bdc2e29e021e86b97a1116ed1fd683c2/app/Http/Controllers/RolesController.php">Bottelet/DaybydayCRM</a>
+                    </div>
+
                     <hr/>
                     <div class="mt-4 mb-4">
                         <b>Alternative - with arrays:</b>

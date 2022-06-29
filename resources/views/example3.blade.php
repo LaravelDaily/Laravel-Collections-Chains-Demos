@@ -74,6 +74,11 @@ $socialLinks = collect([
 ])->filter()->map(fn ($link, $network) => '<a href="' . $link . '">' . $network . '</a>')->implode(' | ')) @endphp
                     </div>
 
+                        <hr />
+                        <div class="mt-4 mb-4">
+                            Inspiration source: <a class="underline" href="https://github.com/spatie/freek.dev/blob/14a25e3b7f7c7d662e61746a9c24d28b9ac316b9/app/Models/Presenters/TalkPresenter.php">spatie/freek.dev</a>
+                        </div>
+
                         <hr/>
                         <div class="mt-4 mb-4">
                             <b>Alternative - with arrays:</b>
