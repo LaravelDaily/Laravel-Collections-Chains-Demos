@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\UpdateRepositoryDetails;
+use App\Models\Event;
 use App\Models\Organization;
 use App\Models\Repository;
 use App\Models\Role;
@@ -89,5 +90,29 @@ class ExampleController extends Controller
         // No alternatives with arrays this time, this code uses Eloquent relations power
 
         return view('example4');
+    }
+
+    public function example5()
+    {
+        $events = Event::all();
+        $filteredEvents = $events
+            ->unique(fn ($event) => $event->message)
+            ->filter(fn ($event) => !is_null($event->subject))
+            ->map(fn ($event) => $this->extractData($event))
+            ->values();
+        info($filteredEvents);
+
+        return view('example5');
+    }
+
+    private function extractData(Event $event): array
+    {
+        return [
+            'label' => ucwords($event->subject),
+            'message' => [
+                'success' => $event->status !== 'error',
+                'message' => $event->message
+            ]
+        ];
     }
 }
