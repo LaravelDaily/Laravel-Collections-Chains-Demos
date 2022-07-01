@@ -8,8 +8,9 @@ use App\Models\Organization;
 use App\Models\Repository;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
 
 class ExampleController extends Controller
 {
@@ -19,15 +20,6 @@ class ExampleController extends Controller
         $permissionsListToShow = $role->permissions
             ->map(fn($permission) => $permission->name)
             ->implode("<br>");
-
-        // ALTERNATIVE - WITH ARRAYS
-        /*
-        $permissionsArrayToShow = [];
-        foreach ($role->permissions as $permission) {
-            $permissionsArrayToShow[] = $permission->name;
-        }
-        $permissionsListToShow = implode("<br>", $permissionsArrayToShow);
-        */
 
         return view('example1');
     }
@@ -50,20 +42,8 @@ class ExampleController extends Controller
             'Instagram' => $user->link_instagram,
         ])
             ->filter()
-            ->map(fn ($link, $network) => '<a href="' . $link . '">' . $network . '</a>')
+            ->map(fn($link, $network) => '<a href="' . $link . '">' . $network . '</a>')
             ->implode(' | ');
-
-        // ALTERNATIVE - WITH ARRAYS
-        /*
-        $socialLinksArray = [
-            'Twitter' => $user->link_twitter,
-            'Facebook' => $user->link_facebook,
-            'Instagram' => $user->link_instagram,
-        ];
-        $socialLinksArray = array_filter($socialLinksArray, fn($item) => $item != '');
-        array_walk($socialLinksArray, fn($link, $network) => '<a href="' . $link . '">' . $network . '</a>');
-        $socialLinks = implode(' | ', $socialLinksArray);
-        */
 
         return view('example3', compact('user'));
     }
@@ -87,8 +67,6 @@ class ExampleController extends Controller
                 UpdateRepositoryDetails::dispatch($repository);
             });
 
-        // No alternatives with arrays this time, this code uses Eloquent relations power
-
         return view('example4');
     }
 
@@ -96,9 +74,9 @@ class ExampleController extends Controller
     {
         $events = Event::all();
         $filteredEvents = $events
-            ->unique(fn ($event) => $event->message)
-            ->filter(fn ($event) => !is_null($event->subject))
-            ->map(fn ($event) => $this->extractData($event))
+            ->unique(fn($event) => $event->message)
+            ->filter(fn($event) => !is_null($event->subject))
+            ->map(fn($event) => $this->extractData($event))
             ->values();
         info($filteredEvents);
 
@@ -114,5 +92,51 @@ class ExampleController extends Controller
                 'message' => $event->message
             ]
         ];
+    }
+
+    public function example6()
+    {
+        // Creating 10 temporary files for the test
+        $f = fopen(storage_path('logs/demo/laravel.log'), 'w');
+        fclose($f);
+        for ($day=0; $day < 10; $day++) {
+            $date = now()->subDays($day)->toDateString();
+            $f = fopen(storage_path('logs/demo/laravel-' . $date . '.log'), 'w');
+            fclose($f);
+        }
+
+        $thresholdDate = now()->subDays(3)->setTime(0, 0, 0, 0);
+
+        $files = Storage::disk("logs")->allFiles();
+        $logFiles = collect($files)
+            ->mapWithKeys(function ($file) {
+                $matches = [];
+                $isMatch = preg_match("/^laravel\-(.*)\.log$/i", $file, $matches);
+
+                if (count($matches) > 1) {
+                    $date = $matches[1];
+                }
+
+                $key = $isMatch ? $date : "";
+                return [$key => $file];
+            })
+            ->forget("")
+            ->filter(function ($value, $key) use ($thresholdDate) {
+                try {
+                    $date = Carbon::parse($key);
+                } catch (\Exception $e) {
+                    return true;
+                }
+
+                return $date->isBefore($thresholdDate);
+            });
+        info($logFiles);
+
+        return view('example6');
+    }
+
+    public function example7()
+    {
+        return view('example7');
     }
 }

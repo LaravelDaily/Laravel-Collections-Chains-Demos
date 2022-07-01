@@ -74,27 +74,12 @@ $socialLinks = collect([
 ])->filter()->map(fn ($link, $network) => '<a href="' . $link . '">' . $network . '</a>')->implode(' | ')) @endphp
                     </div>
 
-                        <hr />
-                        <div class="mt-4 mb-4">
-                            Inspiration source: <a class="underline" href="https://github.com/spatie/freek.dev/blob/14a25e3b7f7c7d662e61746a9c24d28b9ac316b9/app/Models/Presenters/TalkPresenter.php">spatie/freek.dev</a>
-                        </div>
-
-                        <hr/>
-                        <div class="mt-4 mb-4">
-                            <b>Alternative - with arrays:</b>
-                            <pre class="bg-gray-100 p-2 mb-4">
-$socialLinksArray = [
-    'Twitter' => $user->link_twitter,
-    'Facebook' => $user->link_facebook,
-    'Instagram' => $user->link_instagram,
-];
-$socialLinksArray = array_filter($socialLinksArray, fn($item) => $item != '');
-array_walk($socialLinksArray, fn($link, $network) => '&lt;a href="' . $link . '"&gt;' . $network . '&lt;/a&gt;');
-$socialLinks = implode(' | ', $socialLinksArray);
-                    </pre>
-                        </div>
-
+                    <hr />
+                    <div class="mt-4 mb-4">
+                        Inspiration source: <a class="underline" href="https://github.com/spatie/freek.dev/blob/14a25e3b7f7c7d662e61746a9c24d28b9ac316b9/app/Models/Presenters/TalkPresenter.php">spatie/freek.dev</a>
                     </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

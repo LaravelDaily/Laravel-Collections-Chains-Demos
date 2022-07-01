@@ -27,6 +27,12 @@
                     <x-nav-link :href="route('example5')" :active="request()->routeIs('example5')">
                         5
                     </x-nav-link>
+                    <x-nav-link :href="route('example6')" :active="request()->routeIs('example6')">
+                        6
+                    </x-nav-link>
+                    <x-nav-link :href="route('example7')" :active="request()->routeIs('example7')">
+                        7
+                    </x-nav-link>
                 </div>
             </div>
 

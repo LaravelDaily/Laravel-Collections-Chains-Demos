@@ -57,17 +57,6 @@ php artisan twitter:giveaway --exclude=someuser --exclude=@otheruser</pre>
                     <div class="mt-4 mb-4">
                         Inspiration source: <a class="underline" href="https://github.com/Gummibeer/gummibeer.de/blob/master/app/Console/Commands/TwitterGiveaway.php">Gummibeer/gummibeer.de</a>
                     </div>
-
-                    <hr/>
-                    <div class="mt-4 mb-4">
-                        <b>Alternative - with arrays:</b>
-                        <pre class="bg-gray-100 p-2 mb-4">
-$exclude = $this->option('exclude');
-array_push($exclude, 'povilaskorop', '@dailylaravel');
-$excluded = implode(', ',
-    array_map(fn ($item) => str_replace('@', '', $item), $exclude));
-                    </pre>
-                    </div>
                 </div>
             </div>
         </div>
