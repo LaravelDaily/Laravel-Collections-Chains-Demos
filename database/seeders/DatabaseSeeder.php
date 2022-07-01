@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(OrganizationSeeder::class);
         $this->call(RepositorySeeder::class);
         $this->call(EventSeeder::class);
+        $this->call(CommentSeeder::class);
     }
 }

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\UpdateRepositoryDetails;
+use App\Models\Comment;
 use App\Models\Event;
 use App\Models\Organization;
 use App\Models\Repository;
 use App\Models\Role;
 use App\Models\User;
+use App\Notifications\YouWereMentionedNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -137,6 +139,24 @@ class ExampleController extends Controller
 
     public function example7()
     {
+        $comment = Comment::first();
+        collect($comment->mentionedUsers())
+            ->map(function ($name) {
+                return User::where('name', $name)->first();
+            })
+            ->filter()
+            ->each(function ($user) use ($comment) {
+                $user->notify(new YouWereMentionedNotification($comment));
+            });
+
         return view('example7');
     }
+
+    public function mentionedUsers($commentText)
+    {
+        preg_match_all('/@([\w\-]+)/', $commentText, $matches);
+
+        return $matches[1];
+    }
+
 }

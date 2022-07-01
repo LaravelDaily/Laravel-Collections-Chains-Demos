@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Example 1: map + implode') }}
+            {{ __('Example 7: map + filter + each') }}
         </h2>
     </x-slot>
 
@@ -9,48 +9,60 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
+                    <div class="mb-4">
+                        <b>Task</b>: get all users mentioned in the comment text with @username syntax, and send notifications to them.
+                    </div>
+                    <hr />
+
+                    <div class="mt-4 mb-4">
                     <b>Code</b>:
                     <pre class="bg-gray-100 p-2 mb-4">
-$role = Role::with('permissions')->first();
-$permissionsListToShow = $role->permissions
-    ->map(fn($permission) => $permission->name)
-    ->implode("&lt;br&gt;");
+$comment = Comment::first();
+collect($comment->mentionedUsers())
+    ->map(function ($name) {
+        return User::where('name', $name)->first();
+    })
+    ->filter()
+    ->each(function ($user) use ($comment) {
+        $user->notify(new YouWereMentionedNotification($comment));
+    });
                     </pre>
+                    </div>
+
                     <hr/>
                     <div class="mt-4 mb-4">
-                        Initial value of <b>$role->permissions</b>:
+                        Initial value of <b>$comment->description</b>:
                         <br/>
-                        @php dump(\App\Models\Role::with('permissions')->first()->permissions) @endphp
+                        @php dump(\App\Models\Comment::first()->description) @endphp
                     </div>
+
+                    <hr/>
+                    <div class="mt-4 mb-4">
+                        Initial value of <b>$comment->mentionedUsers()</b>:
+                        <br/>
+                        @php dump(collect(\App\Models\Comment::first()->mentionedUsers())) @endphp
+                    </div>
+
                     <hr/>
                     <div class="mt-4 mb-4">
                         Value after <b>map()</b>:
                         <br/>
-                        @php dump(\App\Models\Role::with('permissions')->first()->permissions->map(fn($permission) => $permission->name)  ) @endphp
+                        @php dump(collect(\App\Models\Comment::first()->mentionedUsers())->map(function ($name) {
+        return \App\Models\User::where('name', $name)->first();
+    })) @endphp
                     </div>
                     <hr/>
                     <div class="mt-4 mb-4">
-                        Value after <b>map()->implode()</b>:
+                        Value after <b>map()->filter()</b>:
                         <br/>
-                        @php dump(\App\Models\Role::with('permissions')->first()->permissions
-    ->map(fn($permission) => $permission->name)->implode("<br>")  ) @endphp
+                        @php dump(collect(\App\Models\Comment::first()->mentionedUsers())->map(function ($name) {
+        return \App\Models\User::where('name', $name)->first();
+    })->filter()) @endphp
                     </div>
 
                     <hr />
                     <div class="mt-4 mb-4">
-                        Inspiration source: <a class="underline" href="https://github.com/Bottelet/DaybydayCRM/blob/a5719a23bdc2e29e021e86b97a1116ed1fd683c2/app/Http/Controllers/RolesController.php">Bottelet/DaybydayCRM</a>
-                    </div>
-
-                    <hr/>
-                    <div class="mt-4 mb-4">
-                        <b>Alternative - with arrays:</b>
-                        <pre class="bg-gray-100 p-2 mb-4">
-$permissionsArrayToShow = [];
-foreach ($role->permissions as $permission) {
-    $permissionsArrayToShow[] = $permission->name;
-}
-$permissionsListToShow = implode("&lt;br&gt;", $permissionsArrayToShow);
-                    </pre>
+                        Inspiration source: <a class="underline" href="https://github.com/Bottelet/DaybydayCRM/blob/d1965973f60933fd293aaaaa9f71e9d27edfd819/app/Listeners/NotiftyMentionedUsers.php">Bottelet/DaybydayCRM</a>
                     </div>
                 </div>
             </div>
