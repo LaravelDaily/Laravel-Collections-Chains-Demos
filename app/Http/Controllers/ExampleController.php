@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\UpdateRepositoryDetails;
 use App\Models\Comment;
 use App\Models\Event;
+use App\Models\LaravelVersion;
 use App\Models\Organization;
 use App\Models\Repository;
 use App\Models\Role;
@@ -152,11 +153,83 @@ class ExampleController extends Controller
         return view('example7');
     }
 
-    public function mentionedUsers($commentText)
+    public function example8()
     {
-        preg_match_all('/@([\w\-]+)/', $commentText, $matches);
+        $versionsFromGithub = collect([
+            ['name' => 'v9.19.0'],
+            ['name' => 'v8.83.18'],
+            ['name' => 'v9.18.0'],
+            ['name' => 'v8.83.17'],
+            ['name' => 'v9.17.0'],
+            ['name' => 'v8.83.16'],
+            // ...
+        ]);
 
-        return $matches[1];
+        $versionsFromGithub
+            // Map into arrays containing major, minor, and patch numbers
+            ->map(function ($item) {
+                $pieces = explode('.', ltrim($item['name'], 'v'));
+
+                return [
+                    'major' => $pieces[0],
+                    'minor' => $pieces[1],
+                    'patch' => $pieces[2] ?? null,
+                ];
+            })
+            // Map into groups by release; pre-6, major/minor pair; post-6, major
+            ->mapToGroups(function ($item) {
+                if ($item['major'] < 6) {
+                    return [$item['major'] . '.' . $item['minor'] => $item];
+                }
+
+                return [$item['major'] => $item];
+            })
+            // Take the highest patch or minor/patch number from each release
+            ->map(function ($item) {
+                if ($item->first()['major'] < 6) {
+                    // Take the highest patch
+                    return $item->sortByDesc('patch')->first();
+                }
+
+                // Take the highest minor, then its highest patch
+                return $item->sortBy([['minor', 'desc'], ['patch', 'desc']])->first();
+            })
+            ->each(function ($item) {
+                if ($item['major'] < 6) {
+                    $version = LaravelVersion::where([
+                        'major' => $item['major'],
+                        'minor' => $item['minor'],
+                    ])->first();
+
+                    if ($version->patch < $item['patch']) {
+                        $version->update(['patch' => $item['patch']]);
+                        info('Updated Laravel version ' . $version . ' to use latest patch.');
+                    }
+                }
+
+                $version = LaravelVersion::where([
+                    'major' => $item['major'],
+                ])->first();
+
+                if (! $version) {
+                    // Create it if it doesn't exist
+                    $created = LaravelVersion::create([
+                        'major' => $item['major'],
+                        'minor' => $item['minor'],
+                        'patch' => $item['patch'],
+                    ]);
+
+                    info('Created Laravel version ' . $created);
+                }
+                // Update the minor and patch if needed
+                else if ($version->minor != $item['minor'] || $version->patch != $item['patch']) {
+                    $version->update(['minor' => $item['minor'], 'patch' => $item['patch']]);
+                    info('Updated Laravel version ' . $version . ' to use latest minor/patch.');
+                }
+            });
+
+        return view('example8');
     }
+
 
 }

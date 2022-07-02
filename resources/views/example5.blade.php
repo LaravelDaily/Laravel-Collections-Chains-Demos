@@ -11,7 +11,7 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="mt-4 mb-4">
                     <b>Code snippet</b>:
-                    <pre class="bg-gray-100 p-2 mb-4 text-sm">
+                    <pre class="bg-gray-100 p-2 mb-4">
 $events = Event::all();
 $filteredEvents = $events
     ->unique(fn ($event) => $event->message)

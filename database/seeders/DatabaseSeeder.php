@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RepositorySeeder::class);
         $this->call(EventSeeder::class);
         $this->call(CommentSeeder::class);
+        $this->call(LaravelVersionSeeder::class);
     }
 }
