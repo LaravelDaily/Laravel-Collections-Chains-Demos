@@ -16,14 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', 'example1');
 
 Route::controller(\App\Http\Controllers\ExampleController::class)->group(function () {
-    Route::get('example1', 'example1')->name('example1');
-    Route::get('example2', 'example2')->name('example2');
-    Route::get('example3', 'example3')->name('example3');
-    Route::get('example4', 'example4')->name('example4');
-    Route::get('example5', 'example5')->name('example5');
-    Route::get('example6', 'example6')->name('example6');
-    Route::get('example7', 'example7')->name('example7');
-    Route::get('example8', 'example8')->name('example8');
+    for ($i=1; $i <= config('app.total_examples'); $i++) {
+        Route::get('example' . $i, 'example' . $i)->name('example' . $i);
+    }
 });
 
 require __DIR__.'/auth.php';

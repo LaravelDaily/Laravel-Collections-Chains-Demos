@@ -12,30 +12,13 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('example1')" :active="request()->routeIs('example1')">
-                        1
-                    </x-nav-link>
-                    <x-nav-link :href="route('example2')" :active="request()->routeIs('example2')">
-                        2
-                    </x-nav-link>
-                    <x-nav-link :href="route('example3')" :active="request()->routeIs('example3')">
-                        3
-                    </x-nav-link>
-                    <x-nav-link :href="route('example4')" :active="request()->routeIs('example4')">
-                        4
-                    </x-nav-link>
-                    <x-nav-link :href="route('example5')" :active="request()->routeIs('example5')">
-                        5
-                    </x-nav-link>
-                    <x-nav-link :href="route('example6')" :active="request()->routeIs('example6')">
-                        6
-                    </x-nav-link>
-                    <x-nav-link :href="route('example7')" :active="request()->routeIs('example7')">
-                        7
-                    </x-nav-link>
-                    <x-nav-link :href="route('example8')" :active="request()->routeIs('example8')">
-                        8
-                    </x-nav-link>
+                    @for ($i=1; $i <= config('app.total_examples'); $i++)
+                        @if (view()->exists('example' . $i))
+                        <x-nav-link :href="route('example' . $i)" :active="request()->routeIs('example' . $i)">
+                            {{ $i }}
+                        </x-nav-link>
+                        @endif
+                    @endfor
                 </div>
             </div>
 
