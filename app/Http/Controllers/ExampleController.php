@@ -18,6 +18,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Spatie\Backup\BackupDestination\Backup;
+use Spatie\Backup\BackupDestination\BackupDestination;
+use Spatie\Backup\Helpers\Format;
 
 class ExampleController extends Controller
 {
@@ -296,5 +299,27 @@ class ExampleController extends Controller
         info($elements);
 
         return view('example12');
+    }
+
+    public function example13()
+    {
+        Post::all()
+            ->filter->isTweet()
+            ->filter(function (Post $post) {
+                return empty($post->external_url);
+            })
+            ->each(function (Post $post) {
+                preg_match('/(?=https:\/\/twitter.com\/).+?(?=")/', $post->text, $matches);
+
+                if (count($matches) > 0) {
+                    info($matches[0]);
+                    $post->external_url = $matches[0];
+
+                    // Update external_url
+                    // $post->save();
+                }
+            });
+
+        return view('example13');
     }
 }
