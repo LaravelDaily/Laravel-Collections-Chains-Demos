@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\UpdateRepositoryDetails;
+use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Event;
 use App\Models\LaravelVersion;
 use App\Models\Organization;
+use App\Models\Post;
 use App\Models\Repository;
 use App\Models\Role;
 use App\Models\User;
@@ -231,5 +233,14 @@ class ExampleController extends Controller
         return view('example8');
     }
 
+    public function example9()
+    {
+        $locale = 'en';
+        $path = Category::all()
+            ->map(function ($i) use ($locale) { return $i->getSlug($locale); })
+            ->filter()
+            ->implode('/');
 
+        return view('example9');
+    }
 }
