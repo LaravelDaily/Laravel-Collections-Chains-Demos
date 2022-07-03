@@ -287,4 +287,14 @@ class ExampleController extends Controller
 
         return view('example11');
     }
+
+    public function example12()
+    {
+        $elements = collect(config('setting_fields'))
+            ->pluck('elements')
+            ->flatten(1);
+        info($elements);
+
+        return view('example12');
+    }
 }
