@@ -16,6 +16,7 @@ use App\Notifications\YouWereMentionedNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ExampleController extends Controller
 {
@@ -240,7 +241,25 @@ class ExampleController extends Controller
             ->map(function ($i) use ($locale) { return $i->getSlug($locale); })
             ->filter()
             ->implode('/');
+        info($path);
 
         return view('example9');
+    }
+
+    public function example10()
+    {
+        $class = 'App\\Base\\Http\\Livewire\\SomeClass';
+        $classNamespaces = [
+            'App\\Base\\Http\\Livewire',
+            'App\\Project\\Livewire'
+        ];
+
+        $classNamespace = collect($classNamespaces)->filter(fn ($x) => strpos($class, $x) !== false)->first();
+        $namespace = collect(explode('.', str_replace(['/', '\\'], '.', $classNamespace)))
+            ->map([Str::class, 'kebab'])
+            ->implode('.');
+        info($namespace);
+
+        return view('example10');
     }
 }
