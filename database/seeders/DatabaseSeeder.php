@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CommentSeeder::class);
         $this->call(LaravelVersionSeeder::class);
         $this->call(CategorySeeder::class);
+        $this->call(ScoreSeeder::class);
     }
 }
