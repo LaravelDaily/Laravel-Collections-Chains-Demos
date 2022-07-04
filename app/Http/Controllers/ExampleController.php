@@ -20,9 +20,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
-use Spatie\Backup\BackupDestination\Backup;
-use Spatie\Backup\BackupDestination\BackupDestination;
-use Spatie\Backup\Helpers\Format;
 
 class ExampleController extends Controller
 {
@@ -111,7 +108,7 @@ class ExampleController extends Controller
         // Creating 10 temporary files for the test
         $f = fopen(storage_path('logs/demo/laravel.log'), 'w');
         fclose($f);
-        for ($day=0; $day < 10; $day++) {
+        for ($day = 0; $day < 10; $day++) {
             $date = now()->subDays($day)->toDateString();
             $f = fopen(storage_path('logs/demo/laravel-' . $date . '.log'), 'w');
             fclose($f);
@@ -220,7 +217,7 @@ class ExampleController extends Controller
                     'major' => $item['major'],
                 ])->first();
 
-                if (! $version) {
+                if (!$version) {
                     // Create it if it doesn't exist
                     $created = LaravelVersion::create([
                         'major' => $item['major'],
@@ -229,8 +226,7 @@ class ExampleController extends Controller
                     ]);
 
                     info('Created Laravel version ' . $created);
-                }
-                // Update the minor and patch if needed
+                } // Update the minor and patch if needed
                 else if ($version->minor != $item['minor'] || $version->patch != $item['patch']) {
                     $version->update(['minor' => $item['minor'], 'patch' => $item['patch']]);
                     info('Updated Laravel version ' . $version . ' to use latest minor/patch.');
@@ -244,7 +240,9 @@ class ExampleController extends Controller
     {
         $locale = 'en';
         $path = Category::all()
-            ->map(function ($i) use ($locale) { return $i->getSlug($locale); })
+            ->map(function ($i) use ($locale) {
+                return $i->getSlug($locale);
+            })
             ->filter()
             ->implode('/');
         info($path);
@@ -260,7 +258,7 @@ class ExampleController extends Controller
             'App\\Project\\Livewire'
         ];
 
-        $classNamespace = collect($classNamespaces)->filter(fn ($x) => strpos($class, $x) !== false)->first();
+        $classNamespace = collect($classNamespaces)->filter(fn($x) => strpos($class, $x) !== false)->first();
         $namespace = collect(explode('.', str_replace(['/', '\\'], '.', $classNamespace)))
             ->map([Str::class, 'kebab'])
             ->implode('.');
@@ -272,19 +270,19 @@ class ExampleController extends Controller
     public function example11()
     {
         $hazards = [
-            'BM-1'   => 8,
-            'LT-1'   => 7,
-            'LT-P1'  => 6,
+            'BM-1' => 8,
+            'LT-1' => 7,
+            'LT-P1' => 6,
             'LT-UNK' => 5,
-            'BM-2'   => 4,
-            'BM-3'   => 3,
-            'BM-4'   => 2,
-            'BM-U'   => 1,
-            'NoGS'   => 0,
+            'BM-2' => 4,
+            'BM-3' => 3,
+            'BM-4' => 2,
+            'BM-U' => 1,
+            'NoGS' => 0,
             'Not Screened' => 0,
         ];
 
-        $score = Score::all()->map(function($item) use ($hazards) {
+        $score = Score::all()->map(function ($item) use ($hazards) {
             return $hazards[$item->field];
         })->max();
 
@@ -333,7 +331,7 @@ class ExampleController extends Controller
         ];
         $folders = collect($classNamespaces)->map(function ($namespace) {
             $name = str($namespace)->finish('\\')->replaceFirst(app()->getNamespace(), '');
-            return app('path').'/'.str_replace('\\', '/', $name);
+            return app('path') . '/' . str_replace('\\', '/', $name);
         });
 
         $classNames = $folders
@@ -342,19 +340,51 @@ class ExampleController extends Controller
             })
             ->flatten()
             ->map(function (\SplFileInfo $file) {
-                return app()->getNamespace().str_replace(
+                return app()->getNamespace() . str_replace(
                         ['/', '.php'],
                         ['\\', ''],
-                        Str::after($file->getPathname(), app_path().'/')
+                        Str::after($file->getPathname(), app_path() . '/')
                     );
             })
             ->filter(function (string $class) {
                 return is_subclass_of($class, Component::class) &&
-                    ! (new \ReflectionClass($class))->isAbstract();
+                    !(new \ReflectionClass($class))->isAbstract();
             });
         info($classNames);
 
         return view('example14');
+    }
+
+    public function example15()
+    {
+        $filesystem = new Filesystem();
+        $plugins = [];
+        $ignore = ['nesbot/carbon'];
+        if ($filesystem->exists($path = base_path() . '/vendor/composer/installed.json')) {
+            $plugins = json_decode($filesystem->get($path), true);
+        }
+
+        $packages = collect($plugins['packages'])
+            ->mapWithKeys(function ($package) {
+                return [$this->format($package['name']) => $package['extra']['laravel'] ?? []];
+            })
+            ->each(function ($configuration) use (&$ignore) {
+                $ignore = array_merge($ignore, $configuration['dont-discover'] ?? []);
+            })
+            ->reject(function ($configuration, $package) use ($ignore) {
+                return in_array($package, $ignore);
+            })
+            ->filter()
+            ->all();
+
+        info($packages);
+
+        return view('example15');
+    }
+
+    protected function format($package)
+    {
+        return str_replace('vendor/', '', $package);
     }
 
 }
