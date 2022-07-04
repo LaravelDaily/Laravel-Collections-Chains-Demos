@@ -15,9 +15,11 @@ use App\Models\Score;
 use App\Models\User;
 use App\Notifications\YouWereMentionedNotification;
 use Carbon\Carbon;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Livewire\Component;
 use Spatie\Backup\BackupDestination\Backup;
 use Spatie\Backup\BackupDestination\BackupDestination;
 use Spatie\Backup\Helpers\Format;
@@ -322,4 +324,37 @@ class ExampleController extends Controller
 
         return view('example13');
     }
+
+    public function example14()
+    {
+        $classNamespaces = [
+            'App\\Base\\Http\\Livewire',
+            'App\\Project\\Livewire'
+        ];
+        $folders = collect($classNamespaces)->map(function ($namespace) {
+            $name = str($namespace)->finish('\\')->replaceFirst(app()->getNamespace(), '');
+            return app('path').'/'.str_replace('\\', '/', $name);
+        });
+
+        $classNames = $folders
+            ->map(function ($item) {
+                return (new Filesystem())->allFiles($item);
+            })
+            ->flatten()
+            ->map(function (\SplFileInfo $file) {
+                return app()->getNamespace().str_replace(
+                        ['/', '.php'],
+                        ['\\', ''],
+                        Str::after($file->getPathname(), app_path().'/')
+                    );
+            })
+            ->filter(function (string $class) {
+                return is_subclass_of($class, Component::class) &&
+                    ! (new \ReflectionClass($class))->isAbstract();
+            });
+        info($classNames);
+
+        return view('example14');
+    }
+
 }
