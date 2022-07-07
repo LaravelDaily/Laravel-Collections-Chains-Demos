@@ -11,7 +11,7 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     <b>Code of Artisan command</b>:
                     <pre class="bg-gray-100 p-2 mb-4">
-$excluded = collect($this->option('exclude')
+$excluded = collect($this->option('exclude'))
     ->push('povilaskorop', '@dailylaravel')
     ->map(fn (string $name): string => str_replace('@', '', $name))
     ->implode(', ');

@@ -212,5 +212,5 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
-    'total_examples' => 21,
+    'total_examples' => 15,
 ];
